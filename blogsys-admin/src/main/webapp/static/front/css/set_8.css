@@ -1,0 +1,248 @@
+.set_8_button {
+  display: inline-block;
+  font-weight: 400;
+  padding: 0px 25px;
+  line-height:40px;
+  text-decoration: none;
+  margin-right: 2em;
+  cursor:pointer;
+  text-align: center;
+  transition: background 300ms;
+}
+.set_8_button.outline {
+  color: #333;
+  overflow: hidden;
+  position: relative;
+}
+.set_8_button.outline:before, .set_8_button.outline:after, .set_8_button.outline .lines:before, .set_8_button.outline .lines:after {
+  background-color: #666666;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: transform 300ms;
+  width: 100%;
+}
+.set_8_button.outline:before {
+  bottom: 0;
+  top: auto;
+}
+.set_8_button.outline .lines {
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+.set_8_button.outline .lines:before, .set_8_button.outline .lines:after {
+  height: 100%;
+  width: 2px;
+}
+.set_8_button.outline .lines:after {
+  left: auto;
+  right: 0;
+}
+.set_8_button:hover:before {
+  transform: translateX(-100%);
+}
+.set_8_button:hover:after {
+  transform: translateX(100%);
+}
+.set_8_button:hover .lines:before {
+  transform: translateY(-100%);
+}
+.set_8_button:hover .lines:after {
+  transform: translateY(100%);
+}
+
+
+/*** button 2 ***/
+
+.set_8_button2 {
+  display: inline-block;
+  font-weight: 400;
+  padding: 0px 25px;
+  line-height:45px;
+  text-decoration: none;
+  margin-right: 2em;
+  cursor:pointer;
+  text-align: center;
+  transition: background 300ms;
+}
+.set_8_button2.outline {
+  color: #333;
+  overflow: hidden;
+  position: relative;
+}
+.set_8_button2.outline:before, .set_8_button2.outline:after, .set_8_button2.outline .lines:before, .set_8_button2.outline .lines:after {
+  background-color: #f8c013;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: transform 300ms;
+  width: 100%;
+}
+.set_8_button2.outline:before {
+  bottom: 0;
+  top: auto;
+}
+.set_8_button2.outline .lines {
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+.set_8_button2.outline .lines:before, .set_8_button2.outline .lines:after {
+  height: 100%;
+  width: 2px;
+}
+.set_8_button2.outline .lines:after {
+  left: auto;
+  right: 0;
+}
+.set_8_button2:hover:before {
+  transform: translateX(-100%);
+}
+.set_8_button2:hover:after {
+  transform: translateX(100%);
+}
+.set_8_button2:hover .lines:before {
+  transform: translateY(-100%);
+}
+.set_8_button2:hover .lines:after {
+  transform: translateY(100%);
+}
+
+
+/*** button 3 ***/
+
+.set_8_button3 {
+  display: inline-block;
+  font-weight: 400;
+  padding: 0px 25px;
+  line-height:45px;
+  text-decoration: none;
+  margin-right: 2em;
+  cursor:pointer;
+  text-align: center;
+  transition: background 300ms;
+}
+.set_8_button3.outline {
+  color: #333;
+  overflow: hidden;
+  position: relative;
+}
+.set_8_button3.outline:before, .set_8_button3.outline:after, .set_8_button3.outline .lines:before, .set_8_button3.outline .lines:after {
+  background-color: #dd483f;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: transform 300ms;
+  width: 100%;
+}
+.set_8_button3.outline:before {
+  bottom: 0;
+  top: auto;
+}
+.set_8_button3.outline .lines {
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+.set_8_button3.outline .lines:before, .set_8_button3.outline .lines:after {
+  height: 100%;
+  width: 2px;
+}
+.set_8_button3.outline .lines:after {
+  left: auto;
+  right: 0;
+}
+.set_8_button3:hover:before {
+  transform: translateX(-100%);
+}
+.set_8_button3:hover:after {
+  transform: translateX(100%);
+}
+.set_8_button3:hover .lines:before {
+  transform: translateY(-100%);
+}
+.set_8_button3:hover .lines:after {
+  transform: translateY(100%);
+}
+
+
+/*** button 4 ***/
+
+.set_8_button4 {
+  display: inline-block;
+  font-weight: 400;
+  padding: 0px 25px;
+  line-height:40px;
+  text-decoration: none;
+  margin-right: 2em;
+  cursor:pointer;
+  text-align: center;
+  transition: background 300ms;
+}
+.set_8_button4.outline {
+  color: #333;
+  overflow: hidden;
+  position: relative;
+}
+.set_8_button4.outline:before, .set_8_button4.outline:after, .set_8_button4.outline .lines:before, .set_8_button4.outline .lines:after {
+  background-color: #009688;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: transform 300ms;
+  width: 100%;
+}
+.set_8_button4.outline:before {
+  bottom: 0;
+  top: auto;
+}
+.set_8_button4.outline .lines {
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+.set_8_button4.outline .lines:before, .set_8_button4.outline .lines:after {
+  height: 100%;
+  width: 2px;
+}
+.set_8_button4.outline .lines:after {
+  left: auto;
+  right: 0;
+}
+.set_8_button4:hover:before {
+  transform: translateX(-100%);
+}
+.set_8_button4:hover:after {
+  transform: translateX(100%);
+}
+.set_8_button4:hover .lines:before {
+  transform: translateY(-100%);
+}
+.set_8_button4:hover .lines:after {
+  transform: translateY(100%);
+}

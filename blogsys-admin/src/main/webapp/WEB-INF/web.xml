@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+         <!--xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee-->
+                      <!--http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"-->
+         <!--version="3.1" metadata-complete="false" id="WebApp_1500170678024">-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>Archetype Created Web Application</display-name>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>system/register</welcome-file>
+  </welcome-file-list>
+
+  <!-- 编码过滤器  TODO 未能解决get请求中文乱码的问题，暂时修改tomcat-->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <!--<filter-class>com.songsysy.core.web.filter.CharacterEncodingFilter</filter-class>-->
+    <async-supported>true</async-supported>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- 配置Spring配置文件路径 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:/spring/applicationContext.xml
+    </param-value>
+  </context-param>
+  <!--配置Log4j参数,webAppRootKey的值为webApp.root代表web 项目的根路径-->
+  <context-param>
+    <param-name>webAppRootKey</param-name>
+    <param-value>webApp.root</param-value>
+  </context-param>
+  <!--开一条watchdog线程每60秒扫描一下配置文件的变化-->
+  <context-param>
+    <param-name>log4jRefreshInterval</param-name>
+    <param-value>600000</param-value>
+  </context-param>
+  <!--配置Log4j配置文件路径-->
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>classpath:log4j.properties</param-value>
+  </context-param>
+
+
+  <!-- 加载Spring Mvc配置文件 DispatcherServlet -->
+  <servlet>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/applicationContext-web.xml</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+
+  <!--定义Spring监听器,ContextLoaderListener会读取Spring XML文件并产生 WebApplicationContext对象，然后将这个对象放置在ServletContext的属性-->
+  <!--里，这样我们只要可以得到Servlet就可 以得到WebApplicationContext对象，并利用这个对象访问spring 容器管理的bean。-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <!--定义LOG4J监听器-->
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+
+
+
+  <!-- 添加shiro过滤器  -->
+  <!--DelegatingFilterProxy类是一个代理类，所有的请求都会首先发到这个filter代理-->
+  <!--然后再按照"filter-name"委派到spring中的这个bean。-->
+  <!--在Spring中配置的bean的name要和web.xml中的<filter-name>一样.-->
+  <!--targetFilterLifecycle，是否由spring来管理bean的生命周期，设置为true有个好处，可以调用spring后续的bean-->
+  <filter>
+    <filter-name>shiroFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <init-param>
+      <!-- 该值缺省为false，表示声明周期由SpringApplicationContext管理，设置为true表示ServletContainer管理 -->
+      <param-name>targetFilterLifecycle</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>shiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+
+  <!--阿里druid连接池监控配置-->
+  <filter>
+    <filter-name>DruidWebStatFilter</filter-name>
+    <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+    <init-param>
+      <param-name>exclusions</param-name>
+      <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>DruidWebStatFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>DruidStatView</servlet-name>
+    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DruidStatView</servlet-name>
+    <url-pattern>/druid/*</url-pattern>
+  </servlet-mapping>
+
+
+
+  <display-name></display-name>
+
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/404.jsp</location>
+  </error-page>
+  
+  <error-page>
+    <exception-type>org.apache.shiro.authz.UnauthorizedException</exception-type>
+    <location>/unauthorized.jsp</location>
+  </error-page>
+
+</web-app>

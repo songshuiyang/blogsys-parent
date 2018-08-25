@@ -1,0 +1,36 @@
+﻿*{margin:0;padding: 0}
+body{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: #464646;
+
+
+}
+.skin{width:100%;height:200px;background-color: #ffffff;padding-top: 15px;display: none;z-index: 1001;position: absolute;top: 0;left: 0;background: #eeeeee}
+.skin .pic{width:600px;height: 180px;border: 0px solid red;margin: 0 auto }
+.skin .pic .one{width:196px;height:180px;border:0px solid green;float: left;}
+.skin .pic .one a{float: left;margin: 0;position: relative;}
+.skin .pic .two{width: 97px;float: left;height: 180px;margin-left: 2px;}
+.skin .pic .two a{position: relative;float: left;}
+.skin .pic .three{width: 196px;float: left;margin-left: 2px;}
+.skin .pic .three a{float: left;position: relative;}
+.skin img{border: 0;display: block;margin:0 1px 1px 0;}
+.skin .pic .four{width: 97px;float: left;margin-left: 2px;}
+.skin .pic .four a{position: relative;float: left;}
+.skin .pic a{overflow: hidden}
+.skin .pic a img{-webkit-transition:all .6s;}
+.skin .pic a:hover img{transform:scale(1.1,1.1);opacity: 0.8;filter:alpha(opacity=80) }
+.overflay{width: 100%;display: none; height: 100%;background: #000;position: absolute;top: 0;left: 0;opacity: 0.7;filter:alpha(opacity=70);z-index: 50}
+.mask{
+    display: block;
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: 194px;
+    height: 123px;
+    border: 1px solid #00be3c;
+    background: url(https://p.ssl.qhimg.com/t01b97e80a21610f940.png) no-repeat 0 0;
+}
+

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.SysResourceMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.SysResource" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pkey" property="pkey" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="value1" property="value1" jdbcType="VARCHAR" />
+    <result column="value2" property="value2" jdbcType="VARCHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pkey, value, value1, value2, created_date, created_by, last_modified_date, last_modified_by, 
+    remarks, status, enable
+  </sql>
+
+
+
+  <!--分页查询-->
+  <select id="findPageList" parameterType="sysResource" resultType="sysResource">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_resource
+    <where>
+      <if test="id != null" >
+        id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="pkey != null" >
+        pkey = #{pkey,jdbcType=VARCHAR}
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=VARCHAR}
+      </if>
+      <if test="value1 != null" >
+        value = #{value1,jdbcType=VARCHAR}
+      </if>
+      <if test="value2 != null" >
+        value = #{value2,jdbcType=VARCHAR}
+      </if>
+      <if test="createdDate != null" >
+        AND created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="enable != null" >
+        AND enable = #{enable,jdbcType=BIT}
+      </if>
+    </where>
+  </select>
+
+  <!--获取所有tag-->
+  <select id="findAll" resultType="sysResource">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_resource
+    WHERE enable = 1
+    AND pkey='blogCateGory'
+  </select>
+
+  <!--根据主键获取资源-->
+  <select id="findResourceByPkey" resultType="sysResource">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_resource
+    WHERE
+    enable = 1
+    AND
+    pkey = #{pkey,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <!--SELECT-->
+  <!--*-->
+  <!--FROM-->
+  <!--sys_resource-->
+  <!--WHERE id >= ((SELECT MAX(id) FROM sys_resource)-(SELECT MIN(id) FROM sys_resource)) * RAND() + (SELECT MIN(id) FROM sys_resource)-->
+  <!--AND pkey='headPortrait'-->
+  <!--LIMIT 1-->
+
+  <!--获取随机头像-->
+  <select id="getRandomHeadPortrait" resultType="sysResource">
+    SELECT
+      *
+    FROM
+      sys_resource
+    WHERE
+      pkey='headPortrait'
+    AND enable =1
+    order by rand() limit 1
+  </select>
+
+
+  <!--获取时间线-->
+  <select id="getTimeLine" resultType="sysResource">
+    SELECT
+      *
+    FROM
+      sys_resource
+    WHERE
+      pkey="timeLine"
+    AND enable =1
+    ORDER BY value1 DESC
+  </select>
+
+
+  <!--获取相册分类-->
+  <select id="getPhotoAlbumCategory" resultType="sysResource">
+    SELECT
+      *
+    FROM
+      sys_resource
+    WHERE
+      pkey="photoAlbumCategory"
+    AND enable =1 AND status =1
+      ORDER BY value1 ASC
+  </select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_resource
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.SysResource" >
+    insert into sys_resource (id, pkey, value, 
+      value1, value2, created_date, 
+      created_by, last_modified_date, last_modified_by, 
+      remarks, status, enable
+      )
+    values (#{id,jdbcType=INTEGER}, #{pkey,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, 
+      #{value1,jdbcType=VARCHAR}, #{value2,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{enable,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.SysResource" >
+    insert into sys_resource
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="pkey != null" >
+        pkey,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="value1 != null" >
+        value1,
+      </if>
+      <if test="value2 != null" >
+        value2,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pkey != null" >
+        #{pkey,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null" >
+        #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null" >
+        #{value2,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.SysResource" >
+    update sys_resource
+    <set >
+      <if test="pkey != null" >
+        pkey = #{pkey,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="value1 != null" >
+        value1 = #{value1,jdbcType=VARCHAR},
+      </if>
+      <if test="value2 != null" >
+        value2 = #{value2,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.SysResource" >
+    update sys_resource
+    set pkey = #{pkey,jdbcType=VARCHAR},
+      value = #{value,jdbcType=VARCHAR},
+      value1 = #{value1,jdbcType=VARCHAR},
+      value2 = #{value2,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

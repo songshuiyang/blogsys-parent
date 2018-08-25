@@ -1,0 +1,71 @@
+﻿
+
+.article-detail {
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 1px 8px #a6a6a6;
+    margin-bottom: 15px;
+}
+
+.article-detail-title {
+    text-align: center;
+    margin: 20px 0px;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.article-detail-info {
+    font-size: 13px;
+    padding: 5px 0;
+    text-align: center;
+    margin: 0 0 10px;
+}
+
+    .article-detail-info span {
+        margin: 0 5px;
+    }
+
+.article-detail-content {
+    padding: 10px 5px;
+    overflow: auto;
+}
+
+
+
+/*代码区域*/
+pre {
+    background-color: #f5f5f5 !important;
+    border-radius: 0px !important;
+    border: 1px solid #ccc !important;
+    font-size: 13px !important;
+}
+@media (min-width: 200px) {
+    .input-div {
+        width: 180px;
+    }
+    .input-div-textarea {
+        width: 180px;
+    }
+}
+
+@media (min-width: 992px) {
+    .input-div {
+        width: 300px;
+    }
+    .input-div-textarea {
+        width: 900px;
+    }
+}
+/*.swipeboxEx img{*/
+    /*cursor: pointer;*/
+    /*transition: all 0.5s;*/
+/*}*/
+/*.swipeboxEx img:hover{*/
+    /*transform: scale(1.5);*/
+/*}*/
+.photo-category{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:30px;
+    margin-left:-8px;
+}

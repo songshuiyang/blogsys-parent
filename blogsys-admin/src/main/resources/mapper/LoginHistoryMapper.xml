@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.LoginHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.LoginHistory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="ip_location_province" property="ipLocationProvince" jdbcType="VARCHAR" />
+    <result column="ip_location_city" property="ipLocationCity" jdbcType="VARCHAR" />
+    <result column="ip_location" property="ipLocation" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="VARCHAR" />
+    <result column="device_system" property="deviceSystem" jdbcType="VARCHAR" />
+    <result column="device_version" property="deviceVersion" jdbcType="VARCHAR" />
+    <result column="browser" property="browser" jdbcType="VARCHAR" />
+    <result column="useragent" property="useragent" jdbcType="VARCHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, username, ip, ip_location_province, ip_location_city, ip_location, device_type, 
+    device_system, device_version, browser, useragent, created_date, created_by, last_modified_date, 
+    last_modified_by, remarks, status, enable
+  </sql>
+
+  <!--分页查询-->
+  <select id="findPageList" parameterType="loginHistory" resultType="loginHistory">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_login_history
+    <where>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER}
+      </if>
+      <if test="username != null and username !=''" >
+        AND username LIKE CONCAT('%','#{username,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="ip != null" >
+        AND ip = #{ip,jdbcType=VARCHAR}
+      </if>
+      <if test="ipLocation != null" >
+        AND ip_location = #{ipLocation,jdbcType=VARCHAR}
+      </if>
+      <if test="deviceType != null and deviceType !=''" >
+        AND device_type LIKE CONCAT('%','#{deviceType,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="deviceSystem != null" >
+        AND device_system = #{deviceSystem,jdbcType=VARCHAR}
+      </if>
+      <if test="deviceVersion != null" >
+        AND device_version = #{deviceVersion,jdbcType=VARCHAR}
+      </if>
+      <if test="browser != null" >
+        AND browser = #{browser,jdbcType=VARCHAR}
+      </if>
+      <if test="useragent != null" >
+        AND useragent = #{useragent,jdbcType=VARCHAR}
+      </if>
+      <if test="createdDate != null" >
+        AND created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      AND enable = 1
+    </where>
+    ORDER BY created_date DESC
+  </select>
+
+  <!--分页查询-->
+  <select id="getAddressInfo" parameterType="loginHistory" resultType="loginHistory">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_login_history
+    <where>
+       ip_location_province IS NOT NULL
+      AND
+       ip_location_city IS NOT NULL
+      AND
+       enable = 1
+    </where>
+  </select>
+  <!--###################################### 以下为插件生成的 #####################################-->
+
+
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_login_history
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_login_history
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.LoginHistory" >
+    insert into sys_login_history (id, user_id, username, 
+      ip, ip_location_province, ip_location_city,
+      ip_location, device_type, device_system, 
+      device_version, browser, useragent, 
+      created_date, created_by, last_modified_date, 
+      last_modified_by, remarks, status, 
+      enable)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR}, #{ipLocationProvince,jdbcType=VARCHAR}, #{ipLocationCity,jdbcType=VARCHAR}, 
+      #{ipLocation,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR}, #{deviceSystem,jdbcType=VARCHAR}, 
+      #{deviceVersion,jdbcType=VARCHAR}, #{browser,jdbcType=VARCHAR}, #{useragent,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{enable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.LoginHistory" >
+    insert into sys_login_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="ipLocationProvince != null" >
+        ip_location_province,
+      </if>
+      <if test="ipLocationCity != null" >
+        ip_location_city,
+      </if>
+      <if test="ipLocation != null" >
+        ip_location,
+      </if>
+      <if test="deviceType != null" >
+        device_type,
+      </if>
+      <if test="deviceSystem != null" >
+        device_system,
+      </if>
+      <if test="deviceVersion != null" >
+        device_version,
+      </if>
+      <if test="browser != null" >
+        browser,
+      </if>
+      <if test="useragent != null" >
+        useragent,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="ipLocationProvince != null" >
+        #{ipLocationProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="ipLocationCity != null" >
+        #{ipLocationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="ipLocation != null" >
+        #{ipLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSystem != null" >
+        #{deviceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceVersion != null" >
+        #{deviceVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="browser != null" >
+        #{browser,jdbcType=VARCHAR},
+      </if>
+      <if test="useragent != null" >
+        #{useragent,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.LoginHistory" >
+    update sys_login_history
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="ipLocationProvince != null" >
+        ip_location_province = #{ipLocationProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="ipLocationCity != null" >
+        ip_location_city = #{ipLocationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="ipLocation != null" >
+        ip_location = #{ipLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null" >
+        device_type = #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSystem != null" >
+        device_system = #{deviceSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceVersion != null" >
+        device_version = #{deviceVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="browser != null" >
+        browser = #{browser,jdbcType=VARCHAR},
+      </if>
+      <if test="useragent != null" >
+        useragent = #{useragent,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.LoginHistory" >
+    update sys_login_history
+    set user_id = #{userId,jdbcType=INTEGER},
+      username = #{username,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      ip_location_province = #{ipLocationProvince,jdbcType=VARCHAR},
+      ip_location_city = #{ipLocationCity,jdbcType=VARCHAR},
+      ip_location = #{ipLocation,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=VARCHAR},
+      device_system = #{deviceSystem,jdbcType=VARCHAR},
+      device_version = #{deviceVersion,jdbcType=VARCHAR},
+      browser = #{browser,jdbcType=VARCHAR},
+      useragent = #{useragent,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

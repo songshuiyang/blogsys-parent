@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.MenuMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.Menu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="first_menu" property="firstMenu" jdbcType="VARCHAR" />
+    <result column="second_menu" property="secondMenu" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, first_menu, second_menu, type, icon, url, order_num, created_date, created_by, 
+    last_modified_date, last_modified_by, remarks, status, enable
+  </sql>
+
+
+
+
+  <select id="findPageList" parameterType="menu" resultType="menu">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_menu
+    <where>
+      <if test="firstMenu != null" >
+        first_menu LIKE CONCAT('%','${firstMenu}','%')
+      </if>
+      <if test="secondMenu != null" >
+        AND second_menu LIKE CONCAT('%','${secondMenu}','%')
+      </if>
+      <if test="type != null" >
+        AND type = #{type,jdbcType=INTEGER}
+      </if>
+      <if test="icon != null" >
+        AND icon = #{icon,jdbcType=VARCHAR}
+      </if>
+      <if test="url != null" >
+        AND url = #{url,jdbcType=VARCHAR}
+      </if>
+      <if test="orderNum != null" >
+        AND order_num = #{orderNum,jdbcType=INTEGER}
+      </if>
+      <if test="createdDate != null" >
+        AND created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="enable != null" >
+        AND enable = #{enable,jdbcType=BIT}
+      </if>
+    </where>
+    ORDER BY order_num ASC
+  </select>
+
+
+  <!--获取一级菜单-->
+  <select id="findFirstMenuList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where type = 0
+    AND enable = 1
+  </select>
+
+  <!--获取二级菜单-->
+  <select id="findSecondMenuList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where type = 1
+    AND enable = 1
+  </select>
+
+  <!--根据一级目录查找二级目录-->
+  <select id="findSecondMenuListByFirstMenu" resultMap="BaseResultMap" parameterType="string">
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where first_menu = #{firstMenu}
+    AND enable = 1 AND type = 1 AND status =0
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.Menu" >
+    insert into sys_menu (id, first_menu, second_menu, 
+      type, icon, url, order_num, 
+      created_date, created_by, last_modified_date, 
+      last_modified_by, remarks, status, 
+      enable)
+    values (#{id,jdbcType=INTEGER}, #{firstMenu,jdbcType=VARCHAR}, #{secondMenu,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{enable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.Menu" >
+    insert into sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="firstMenu != null" >
+        first_menu,
+      </if>
+      <if test="secondMenu != null" >
+        second_menu,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="orderNum != null" >
+        order_num,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="firstMenu != null" >
+        #{firstMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="secondMenu != null" >
+        #{secondMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.Menu" >
+    update sys_menu
+    <set >
+      <if test="firstMenu != null" >
+        first_menu = #{firstMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="secondMenu != null" >
+        second_menu = #{secondMenu,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.Menu" >
+    update sys_menu
+    set first_menu = #{firstMenu,jdbcType=VARCHAR},
+      second_menu = #{secondMenu,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      icon = #{icon,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      order_num = #{orderNum,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

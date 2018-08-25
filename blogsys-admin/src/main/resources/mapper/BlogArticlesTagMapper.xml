@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.BlogArticlesTagMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.BlogArticlesTag" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="blog_tag_id" property="blogTagId" jdbcType="INTEGER" />
+    <result column="blog_articles_id" property="blogArticlesId" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, blog_tag_id, blog_articles_id, created_date, created_by, last_modified_date, 
+    last_modified_by, remarks, status, enable
+  </sql>
+
+  <!--根据标签id 获取文章-->
+  <select id="findArticlesByTagId" parameterType="int" resultType="blogArticles">
+    SELECT
+      *
+    FROM
+      blog_articles
+    INNER JOIN
+      blog_articles_tag
+    ON
+      blog_articles.id = blog_articles_tag.id
+    WHERE
+      blog_articles_tag.blog_tag_id = #{tagId}
+  </select>
+
+  <!--根据文章id 获取tag-->
+  <select id="findTagByArticlesId" parameterType="int" resultType="blogTag">
+    SELECT
+      *
+    FROM
+      blog_tag
+    INNER JOIN
+      blog_articles_tag
+    ON
+      blog_tag.id = blog_articles_tag.blog_tag_id
+    WHERE
+      blog_articles_tag.blog_articles_id = #{articlesId}
+  </select>
+
+  <delete id="deleteArticlesTagByArticlesId" parameterType="int">
+    DELETE
+      FROM
+    blog_articles_tag
+      WHERE
+    blog_articles_id = #{articlesId,jdbcType=INTEGER}
+  </delete>
+
+
+  <!--###################################### 以下为插件生成的 #####################################-->
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from blog_articles_tag
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from blog_articles_tag
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.BlogArticlesTag" >
+    insert into blog_articles_tag (id, blog_tag_id, blog_articles_id, 
+      created_date, created_by, last_modified_date, 
+      last_modified_by, remarks, status, 
+      enable)
+    values (#{id,jdbcType=INTEGER}, #{blogTagId,jdbcType=INTEGER}, #{blogArticlesId,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{enable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.BlogArticlesTag" >
+    insert into blog_articles_tag
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="blogTagId != null" >
+        blog_tag_id,
+      </if>
+      <if test="blogArticlesId != null" >
+        blog_articles_id,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="blogTagId != null" >
+        #{blogTagId,jdbcType=INTEGER},
+      </if>
+      <if test="blogArticlesId != null" >
+        #{blogArticlesId,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.BlogArticlesTag" >
+    update blog_articles_tag
+    <set >
+      <if test="blogTagId != null" >
+        blog_tag_id = #{blogTagId,jdbcType=INTEGER},
+      </if>
+      <if test="blogArticlesId != null" >
+        blog_articles_id = #{blogArticlesId,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.BlogArticlesTag" >
+    update blog_articles_tag
+    set blog_tag_id = #{blogTagId,jdbcType=INTEGER},
+      blog_articles_id = #{blogArticlesId,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.Role" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="role_code" property="roleCode" jdbcType="VARCHAR" />
+    <result column="role_describe" property="roleDescribe" jdbcType="VARCHAR" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, role_name, role_code, role_describe, created_date, created_by, last_modified_date, 
+    last_modified_by, remarks, status, enable
+  </sql>
+
+  <select id="findPageList" parameterType="role" resultType="role">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    sys_role
+    <where>
+      <if test="id != null" >
+        id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="roleName != null and roleName != ''" >
+        AND role_name  LIKE CONCAT('%','#{roleName,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="roleCode != null and roleCode != ''" >
+        AND role_code  LIKE CONCAT('%','#{roleCode,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="roleDescribe != null" >
+        AND role_describe = #{roleDescribe,jdbcType=VARCHAR}
+      </if>
+      <if test="createdDate != null" >
+        AND created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="enable != null" >
+        AND enable = #{enable,jdbcType=BIT}
+      </if>
+    </where>
+  </select>
+
+  <!--获取所有角色-->
+  <select id="findAllRole" resultType="role">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM
+      sys_role
+    WHERE
+      enable = 1
+  </select>
+
+  <!--根据角色id获取所属用户-->
+  <select id="findUsersByRoleId" parameterType="int" resultType="user">
+    SELECT
+    sys_user.*
+    FROM
+    sys_user,
+    sys_user_role
+    WHERE
+    sys_user.id = sys_user_role.user_id
+    AND
+    role_id = #{roleId}
+    AND
+    sys_user.enable = 1
+  </select>
+
+  <!--根据用户id获取所属角色-->
+  <select id="findRolesByUserId" parameterType="int" resultType="role">
+    SELECT
+      sys_role.*
+    FROM
+      sys_role,
+      sys_user_role
+    WHERE
+      sys_role.id = sys_user_role.role_id
+    AND
+      user_id = #{userId}
+    AND
+      sys_role.enable =1
+  </select>
+  <!--删除用户角色关系-->
+  <delete id="deleteUserRoleRelation" parameterType="userRole">
+    DELETE
+    FROM
+      sys_user_role
+    WHERE
+    <if test="userId != null" >
+      user_id = #{userId,jdbcType=INTEGER}
+    </if>
+    <if test="roleId != null" >
+      role_id = #{roleId,jdbcType=INTEGER}
+    </if>
+  </delete>
+
+  <!--插入新的用户角色关系-->
+  <insert id="insertUserRoleRelation" parameterType="userRole">
+    INSERT INTO
+    sys_user_role (user_id,role_id)
+    values (#{userId,jdbcType=INTEGER},#{roleId,jdbcType=INTEGER} )
+  </insert>
+
+
+
+  <!--删除权限角色关系（中间表）-->
+  <delete id="deleteRolePermisssionRelation" parameterType="rolePermisssion">
+    DELETE
+    FROM
+    sys_role_permission
+    WHERE
+    <if test="permissionId != null" >
+      permission_id = #{permissionId,jdbcType=INTEGER}
+    </if>
+    <if test="roleId != null" >
+      role_id = #{roleId,jdbcType=INTEGER}
+    </if>
+  </delete>
+
+  <!--插入新的权限角色关系（中间表）-->
+  <insert id="insertRolePermisssionRelation" parameterType="rolePermisssion">
+    INSERT INTO
+    sys_role_permission (permission_id,role_id)
+    values (#{permissionId,jdbcType=INTEGER},#{roleId,jdbcType=INTEGER} )
+  </insert>
+
+
+
+  <!--根据权限id获取所属角色-->
+  <select id="findRolesByPermissionId" parameterType="int" resultType="role">
+    SELECT
+    sys_role.*
+    FROM
+    sys_role,
+    sys_role_permission
+    WHERE
+    sys_role.id = sys_role_permission.role_id
+    AND
+    permission_id = #{permissionId}
+    AND
+      sys_role.enable = 1
+  </select>
+
+  <!--根据角色id获取所拥有的权限-->
+  <select id="findPermissionByRoleId" parameterType="int" resultType="permission">
+    SELECT
+    sys_permission.*
+    FROM
+    sys_permission,
+    sys_role_permission
+    WHERE
+    sys_permission.id = sys_role_permission.permission_id
+    AND
+    role_id = #{roleId}
+    AND
+      sys_permission.enable = 1
+  </select>
+
+
+  <!--根据角色id获取所拥有的权限-->
+  <select id="findPermissionByRoleIdList" parameterType="java.util.List" resultType="permission">
+    SELECT
+    sys_permission.*
+    FROM
+    sys_permission,
+    sys_role_permission
+    WHERE
+    sys_permission.id = sys_role_permission.permission_id
+    AND
+    role_id
+      IN
+      <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+      </foreach>
+    AND
+    sys_permission.enable = 1
+  </select>
+
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.Role" >
+    insert into sys_role (id, role_name, role_code, 
+      role_describe, created_date, created_by, 
+      last_modified_date, last_modified_by, remarks, 
+      status, enable)
+    values (#{id,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR}, 
+      #{roleDescribe,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, 
+      #{lastModifiedDate,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{enable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.Role" >
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
+      <if test="roleCode != null" >
+        role_code,
+      </if>
+      <if test="roleDescribe != null" >
+        role_describe,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null" >
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDescribe != null" >
+        #{roleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.Role" >
+    update sys_role
+    <set >
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null" >
+        role_code = #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDescribe != null" >
+        role_describe = #{roleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.Role" >
+    update sys_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_code = #{roleCode,jdbcType=VARCHAR},
+      role_describe = #{roleDescribe,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

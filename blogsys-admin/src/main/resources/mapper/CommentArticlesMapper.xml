@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.CommentArticlesMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.CommentArticles" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="blog_articles_id" property="blogArticlesId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="cover_image" property="coverImage" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="author_location_province" property="authorLocationProvince" jdbcType="VARCHAR" />
+    <result column="author_location_city" property="authorLocationCity" jdbcType="VARCHAR" />
+    <result column="satisfactory_num" property="satisfactoryNum" jdbcType="INTEGER" />
+    <result column="dissatisfied_num" property="dissatisfiedNum" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.songsy.admin.entity.CommentArticles" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, blog_articles_id, type, cover_image, author, email, author_location_province, 
+    author_location_city, satisfactory_num, dissatisfied_num, created_date, created_by, 
+    last_modified_date, last_modified_by, remarks, status, enable
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+
+
+
+  <!--根据文章id获取评论(带详细)-->
+  <select id="findCommentDetailByArticlesId" resultType="commentArticles" parameterType="int">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from comment_articles
+    where blog_articles_id = #{blogArticlesId,jdbcType=INTEGER}
+    AND
+    type = 0
+    AND enable =1
+
+  </select>
+
+  <!--根据文章id获取评论-->
+  <select id="findCommentByArticlesId" resultType="commentArticles" parameterType="int">
+    select
+      id,type, cover_image, content,author, email, author_location_province,
+    author_location_city, satisfactory_num, dissatisfied_num, created_date, enable
+    from comment_articles
+    where
+      blog_articles_id = #{blogArticlesId,jdbcType=INTEGER}
+    AND
+      type = 0
+    AND enable =1
+  </select>
+
+  <!--获取留言-->
+  <select id="findLeavingMessage" resultType="commentArticles">
+    select
+    id,type, cover_image, content,author, email, author_location_province,
+    author_location_city, satisfactory_num, dissatisfied_num, created_date, enable
+    from comment_articles
+    where type = 1
+    AND enable =1
+  </select>
+
+
+  <!--分页查询-->
+  <select id="findPageList" parameterType="commentArticles" resultType="commentArticles">
+    SELECT
+    comment_articles.id, comment_articles.blog_articles_id, comment_articles.type,
+    comment_articles.cover_image, comment_articles.author, comment_articles.email,
+    comment_articles.author_location_province, comment_articles.author_location_city,
+    comment_articles.satisfactory_num, comment_articles.dissatisfied_num, comment_articles.created_date,
+    comment_articles.created_by, comment_articles.last_modified_date, comment_articles.last_modified_by,
+    comment_articles.remarks, comment_articles.status, comment_articles.enable,
+    comment_articles.content , blog_articles.title AS articlesTitle
+    FROM
+    comment_articles
+    LEFT JOIN blog_articles ON blog_articles.id = comment_articles.blog_articles_id
+    <where>
+      <if test="blogArticlesId != null" >
+        comment_articles.blog_articles_id = #{blogArticlesId,jdbcType=INTEGER}
+      </if>
+      <if test="type != null" >
+        AND comment_articles.type = #{type,jdbcType=INTEGER}
+      </if>
+      <if test="coverImage != null" >
+        AND comment_articles.cover_image = #{coverImage,jdbcType=VARCHAR}
+      </if>
+      <if test="author != null and author !=''" >
+        AND comment_articles.author LIKE CONCAT('%','#{author,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="email != null" >
+        AND comment_articles.email = #{email,jdbcType=VARCHAR}
+      </if>
+      <if test="authorLocationProvince != null" >
+        AND comment_articles.author_location_province = #{authorLocationProvince,jdbcType=VARCHAR}
+      </if>
+      <if test="authorLocationCity != null" >
+        AND comment_articles.author_location_city = #{authorLocationCity,jdbcType=VARCHAR}
+      </if>
+      <if test="satisfactoryNum != null" >
+        AND comment_articles.satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER}
+      </if>
+      <if test="dissatisfiedNum != null" >
+        AND dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER}
+      </if>
+      <if test="createdDate != null" >
+        AND comment_articles.created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND comment_articles.created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND comment_articles.last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND comment_articles.last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND comment_articles.remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND comment_articles.status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="enable != null" >
+        AND comment_articles.enable = #{enable,jdbcType=BIT}
+      </if>
+      <if test="content != null" >
+        AND comment_articles.content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from comment_articles
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from comment_articles
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.CommentArticles" >
+    insert into comment_articles (id, blog_articles_id, type, 
+      cover_image, author, email, 
+      author_location_province, author_location_city, 
+      satisfactory_num, dissatisfied_num, created_date, 
+      created_by, last_modified_date, last_modified_by, 
+      remarks, status, enable, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{blogArticlesId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{coverImage,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{authorLocationProvince,jdbcType=VARCHAR}, #{authorLocationCity,jdbcType=VARCHAR}, 
+      #{satisfactoryNum,jdbcType=INTEGER}, #{dissatisfiedNum,jdbcType=INTEGER}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{enable,jdbcType=BIT}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.CommentArticles" >
+    insert into comment_articles
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="blogArticlesId != null" >
+        blog_articles_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="coverImage != null" >
+        cover_image,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="authorLocationProvince != null" >
+        author_location_province,
+      </if>
+      <if test="authorLocationCity != null" >
+        author_location_city,
+      </if>
+      <if test="satisfactoryNum != null" >
+        satisfactory_num,
+      </if>
+      <if test="dissatisfiedNum != null" >
+        dissatisfied_num,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="blogArticlesId != null" >
+        #{blogArticlesId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="coverImage != null" >
+        #{coverImage,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="authorLocationProvince != null" >
+        #{authorLocationProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="authorLocationCity != null" >
+        #{authorLocationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="satisfactoryNum != null" >
+        #{satisfactoryNum,jdbcType=INTEGER},
+      </if>
+      <if test="dissatisfiedNum != null" >
+        #{dissatisfiedNum,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.CommentArticles" >
+    update comment_articles
+    <set >
+      <if test="blogArticlesId != null" >
+        blog_articles_id = #{blogArticlesId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="coverImage != null" >
+        cover_image = #{coverImage,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="authorLocationProvince != null" >
+        author_location_province = #{authorLocationProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="authorLocationCity != null" >
+        author_location_city = #{authorLocationCity,jdbcType=VARCHAR},
+      </if>
+      <if test="satisfactoryNum != null" >
+        satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER},
+      </if>
+      <if test="dissatisfiedNum != null" >
+        dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.songsy.admin.entity.CommentArticles" >
+    update comment_articles
+    set blog_articles_id = #{blogArticlesId,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      cover_image = #{coverImage,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      author_location_province = #{authorLocationProvince,jdbcType=VARCHAR},
+      author_location_city = #{authorLocationCity,jdbcType=VARCHAR},
+      satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER},
+      dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.CommentArticles" >
+    update comment_articles
+    set blog_articles_id = #{blogArticlesId,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      cover_image = #{coverImage,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      author_location_province = #{authorLocationProvince,jdbcType=VARCHAR},
+      author_location_city = #{authorLocationCity,jdbcType=VARCHAR},
+      satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER},
+      dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

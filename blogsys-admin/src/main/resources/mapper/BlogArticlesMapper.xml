@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.songsy.admin.dao.BlogArticlesMapper" >
+  <resultMap id="BaseResultMap" type="com.songsy.admin.entity.BlogArticles" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="outline" property="outline" jdbcType="VARCHAR" />
+    <result column="cover_image" property="coverImage" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="category" property="category" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+    <result column="hits_num" property="hitsNum" jdbcType="INTEGER" />
+    <result column="satisfactory_num" property="satisfactoryNum" jdbcType="INTEGER" />
+    <result column="dissatisfied_num" property="dissatisfiedNum" jdbcType="INTEGER" />
+    <result column="comment_num" property="commentNum" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="VARCHAR" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_by" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="enable" property="enable" jdbcType="BIT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.songsy.admin.entity.BlogArticles" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,title, outline, cover_image, author, category, type, tag, hits_num, satisfactory_num,
+    dissatisfied_num, comment_num, created_date, created_by, last_modified_date, last_modified_by, 
+    remarks, status, enable
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+
+  <!--,-->
+  <!--<include refid="Blob_Column_List" />-->
+  
+  <!--分页查询-->
+  <select id="findPageList" parameterType="blogArticles" resultType="blogArticles">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    blog_articles
+    <where>
+      <if test="title != null and title !=''" >
+        title LIKE CONCAT('%','#{title,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="outline != null and outline !=''" >
+        AND outline  LIKE CONCAT('%','#{outline,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="coverImage != null and outline !=''" >
+        AND cover_image = #{coverImage,jdbcType=VARCHAR}
+      </if>
+      <if test="author != null and author !=''" >
+        AND author = #{author,jdbcType=VARCHAR}
+      </if>
+      <if test="category != null and category !='' " >
+        AND category = #{category,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null and type !=''" >
+        AND type = #{type,jdbcType=INTEGER}
+      </if>
+      <if test="tag != null and tag !=''" >
+        AND tag LIKE '%${tag}%'
+      </if>
+      <if test="hitsNum != null" >
+        AND hits_num = #{hitsNum,jdbcType=INTEGER}
+      </if>
+      <if test="satisfactoryNum != null" >
+        AND satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER}
+      </if>
+      <if test="dissatisfiedNum != null" >
+        AND dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER}
+      </if>
+      <if test="commentNum != null" >
+        AND comment_num = #{commentNum,jdbcType=INTEGER}
+      </if>
+      <if test="createdDate != null" >
+        AND created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="enable != null" >
+        AND enable = #{enable,jdbcType=BIT}
+      </if>
+      <if test="content != null" >
+        AND content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </select>
+
+  <!--获取最后插入MySQL记录的自增ID值-->
+  <select id="getLastInsertRecordId" resultType="int">
+    SELECT last_insert_id();
+  </select>
+
+  <!--热文-->
+  <select id="hotArticles" parameterType="int" resultType="blogArticles">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM
+      blog_articles
+    ORDER BY hits_num DESC
+    LIMIT #{pageSize}
+  </select>
+
+  <!--统计文章分类-->
+  <select id="getArticlesTypeCount" resultType="com.songsy.admin.dto.BlogArticlesTypeDTO">
+    SELECT
+     type, COUNT(*) as value
+    FROM
+      blog_articles
+    GROUP BY
+      type
+    ORDER BY type ASC
+  </select>
+
+  <!--统计文章分类-->
+  <select id="getBlogArticlesCategoryCount" resultType="com.songsy.admin.dto.EchartsDTO">
+    SELECT
+      category as name, COUNT(*) as value
+    FROM
+      blog_articles
+    GROUP BY
+      category
+    ORDER BY category ASC
+  </select>
+
+
+  <!--根据查询条件查询文章-->
+  <select id="findBlogArticlesByParam" parameterType="com.songsy.admin.dto.BlogArticlesDTO" resultType="blogArticles">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    blog_articles
+    <where>
+      <if test="title != null" >
+        title LIKE CONCAT('%','#{title,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="outline != null" >
+        AND outline  LIKE CONCAT('%','#{outline,jdbcType=VARCHAR}','%')
+      </if>
+      <if test="coverImage != null" >
+        AND cover_image = #{coverImage,jdbcType=VARCHAR}
+      </if>
+      <if test="author != null" >
+        AND author = #{author,jdbcType=VARCHAR}
+      </if>
+      <if test="category != null" >
+        AND category = #{category,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null" >
+        AND type = #{type,jdbcType=INTEGER}
+      </if>
+      <if test="tag != null" >
+        AND tag LIKE '%${tag}%'
+      </if>
+      <if test="hitsNum != null" >
+        AND hits_num = #{hitsNum,jdbcType=INTEGER}
+      </if>
+      <if test="satisfactoryNum != null" >
+        AND satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER}
+      </if>
+      <if test="dissatisfiedNum != null" >
+        AND dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER}
+      </if>
+      <if test="commentNum != null" >
+        AND comment_num = #{commentNum,jdbcType=INTEGER}
+      </if>
+      <if test="createdDate != null" >
+        AND created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdBy != null" >
+        AND created_by = #{createdBy,jdbcType=VARCHAR}
+      </if>
+      <if test="lastModifiedDate != null" >
+        AND last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastModifiedBy != null" >
+        AND last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR}
+      </if>
+      <if test="remarks != null" >
+        AND remarks = #{remarks,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="content != null" >
+        AND content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+
+      <if test="startDate != null" >
+        AND created_date &gt;= #{startDate,jdbcType=TIMESTAMP}
+      </if>
+
+      <if test="endDate != null" >
+        AND created_date &lt;= #{endDate,jdbcType=TIMESTAMP}
+      </if>
+
+      AND enable = 1
+    </where>
+  </select>
+
+
+
+  <!--###################################### 以下为插件生成的 #####################################-->
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from blog_articles
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from blog_articles
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.songsy.admin.entity.BlogArticles" >
+    insert into blog_articles (id, title, outline, 
+      cover_image, author, category, 
+      type, tag, hits_num, 
+      satisfactory_num, dissatisfied_num, comment_num, 
+      created_date, created_by, last_modified_date, 
+      last_modified_by, remarks, status, 
+      enable, content)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{outline,jdbcType=VARCHAR}, 
+      #{coverImage,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR}, #{hitsNum,jdbcType=INTEGER}, 
+      #{satisfactoryNum,jdbcType=INTEGER}, #{dissatisfiedNum,jdbcType=INTEGER}, #{commentNum,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{lastModifiedDate,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{enable,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.songsy.admin.entity.BlogArticles" >
+    insert into blog_articles
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="outline != null" >
+        outline,
+      </if>
+      <if test="coverImage != null" >
+        cover_image,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="category != null" >
+        category,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+      <if test="hitsNum != null" >
+        hits_num,
+      </if>
+      <if test="satisfactoryNum != null" >
+        satisfactory_num,
+      </if>
+      <if test="dissatisfiedNum != null" >
+        dissatisfied_num,
+      </if>
+      <if test="commentNum != null" >
+        comment_num,
+      </if>
+      <if test="createdDate != null" >
+        created_date,
+      </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date,
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="enable != null" >
+        enable,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="outline != null" >
+        #{outline,jdbcType=VARCHAR},
+      </if>
+      <if test="coverImage != null" >
+        #{coverImage,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="hitsNum != null" >
+        #{hitsNum,jdbcType=INTEGER},
+      </if>
+      <if test="satisfactoryNum != null" >
+        #{satisfactoryNum,jdbcType=INTEGER},
+      </if>
+      <if test="dissatisfiedNum != null" >
+        #{dissatisfiedNum,jdbcType=INTEGER},
+      </if>
+      <if test="commentNum != null" >
+        #{commentNum,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        #{enable,jdbcType=BIT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.songsy.admin.entity.BlogArticles" >
+    update blog_articles
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="outline != null" >
+        outline = #{outline,jdbcType=VARCHAR},
+      </if>
+      <if test="coverImage != null" >
+        cover_image = #{coverImage,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null" >
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="tag != null" >
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="hitsNum != null" >
+        hits_num = #{hitsNum,jdbcType=INTEGER},
+      </if>
+      <if test="satisfactoryNum != null" >
+        satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER},
+      </if>
+      <if test="dissatisfiedNum != null" >
+        dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER},
+      </if>
+      <if test="commentNum != null" >
+        comment_num = #{commentNum,jdbcType=INTEGER},
+      </if>
+      <if test="createdDate != null" >
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedDate != null" >
+        last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="enable != null" >
+        enable = #{enable,jdbcType=BIT},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.songsy.admin.entity.BlogArticles" >
+    update blog_articles
+    set title = #{title,jdbcType=VARCHAR},
+      outline = #{outline,jdbcType=VARCHAR},
+      cover_image = #{coverImage,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      hits_num = #{hitsNum,jdbcType=INTEGER},
+      satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER},
+      dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER},
+      comment_num = #{commentNum,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.songsy.admin.entity.BlogArticles" >
+    update blog_articles
+    set title = #{title,jdbcType=VARCHAR},
+      outline = #{outline,jdbcType=VARCHAR},
+      cover_image = #{coverImage,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      hits_num = #{hitsNum,jdbcType=INTEGER},
+      satisfactory_num = #{satisfactoryNum,jdbcType=INTEGER},
+      dissatisfied_num = #{dissatisfiedNum,jdbcType=INTEGER},
+      comment_num = #{commentNum,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      last_modified_by = #{lastModifiedBy,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      enable = #{enable,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
