@@ -1,8 +1,6 @@
 ## 一：项目介绍
 * 项目名称: 基于JavaWeb的个人博客系统
 
-* 目前正在不间断迭代开发中，请大家多多 Star ，您的鼓励就是我开发的动力，O(∩_∩)O谢谢~
-
 * 演示地址: www.songshuiyang.com 免密码登录
 
 * 如有问题联系邮箱：songshuiyang@foxmail.com
