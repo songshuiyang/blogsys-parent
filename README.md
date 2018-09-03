@@ -5,10 +5,7 @@
 
 * 演示地址: www.songshuiyang.com 免密码登录
 
-* 联系邮箱：songshuiyang@foxmail.com
-
-* 扫码加入QQ群
-![输入图片说明](https://images.gitee.com/uploads/images/2018/0825/040032_89d9dbfb_1502968.png "在这里输入图片标题")
+* 如有问题联系邮箱：songshuiyang@foxmail.com
 
 
 
