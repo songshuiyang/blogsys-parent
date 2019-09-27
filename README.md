@@ -1,7 +1,7 @@
 ## 一：项目介绍
 * 项目名称: 基于JavaWeb的个人博客系统
 
-* 演示地址: www.songshuiyang.site 免密码登录
+* 演示地址: http://111.230.226.158 免密码登录
 
 * 如有问题联系邮箱：songshuiyang@foxmail.com
 
