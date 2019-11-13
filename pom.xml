@@ -26,7 +26,7 @@
         <log4j.version>1.2.16</log4j.version>
         <taglibs.version>1.1.2</taglibs.version>
         <jstl.version>1.2</jstl.version>
-        <jackson-databind.version>2.5.4</jackson-databind.version>
+        <jackson-databind.version>2.9.10.1</jackson-databind.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <junit.version>4.11</junit.version>
         <logback.version>1.1.1</logback.version>
@@ -244,7 +244,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.7.4</version>
+            <version>2.9.10.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl -->
