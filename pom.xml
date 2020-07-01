@@ -19,7 +19,7 @@
         <spring.version>4.1.7.RELEASE</spring.version>
         <mybatis.version>3.3.0</mybatis.version>
         <spring.mybatis.version>1.2.3</spring.mybatis.version>
-        <mysql.connector.version>5.1.37</mysql.connector.version>
+        <mysql.connector.version>8.0.16</mysql.connector.version>
         <c3p0.version>0.9.1.2</c3p0.version>
         <druid.version>1.0.2</druid.version>
         <slf4j.version>1.6.6</slf4j.version>
