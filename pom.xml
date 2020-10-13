@@ -28,7 +28,7 @@
         <jstl.version>1.2</jstl.version>
         <jackson-databind.version>2.5.4</jackson-databind.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <logback.version>1.1.1</logback.version>
         <commons-lang.version>2.6</commons-lang.version>
         <pagehelper.version>4.1.6</pagehelper.version>
