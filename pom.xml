@@ -17,7 +17,7 @@
         <project.version>0.0.1-SNAPSHOT</project.version>
         <!-- 依赖包版本 -->
         <spring.version>4.1.7.RELEASE</spring.version>
-        <mybatis.version>3.3.0</mybatis.version>
+        <mybatis.version>3.5.6</mybatis.version>
         <spring.mybatis.version>1.2.3</spring.mybatis.version>
         <mysql.connector.version>5.1.37</mysql.connector.version>
         <c3p0.version>0.9.1.2</c3p0.version>
